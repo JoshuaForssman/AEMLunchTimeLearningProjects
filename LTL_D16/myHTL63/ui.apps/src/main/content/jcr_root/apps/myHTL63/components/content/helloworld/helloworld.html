@@ -13,9 +13,14 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */-->
-<p data-sly-test="${properties.text}">Text property: ${properties.text}</p>
-
+<!-- <p data-sly-test="${properties.text}">Text property: ${properties.text}</p>
 <pre data-sly-use.hello="com.community.aem.core.models.HelloWorldModel">
 HelloWorldModel says:
 ${hello.message}
-</pre>
+</pre>-->
+
+<p>This is your AEM HTML Template Language component:</p>
+<div data-sly-use.heroTextObject="com.community.aem.core.HeroTextComponent" data-sly-test="${heroTextObject}">
+       <h1>${heroTextObject.heroTextBean.headingText}</h1>
+       <p>${heroTextObject.heroTextBean.description}</p>    
+</div>
