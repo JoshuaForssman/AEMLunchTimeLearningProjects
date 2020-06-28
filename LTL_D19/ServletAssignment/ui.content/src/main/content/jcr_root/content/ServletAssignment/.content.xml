@@ -20,11 +20,5 @@
     <beverage-servlet
         jcr:primaryType="nt:unstructured"
         sling:resourceType="ServletAssignment/servlet/beverage">
-        <Coke
-            jcr:primaryType="nt:unstructured"
-            name="Coke"/>
-        <Pepsie
-            jcr:primaryType="nt:unstructured"
-            name="Pepsie"/>
     </beverage-servlet>
 </jcr:root>

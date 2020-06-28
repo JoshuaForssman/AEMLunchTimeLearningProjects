@@ -27,12 +27,14 @@ import org.osgi.framework.Constants;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.servlet.Servlet;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
@@ -41,65 +43,69 @@ import java.io.IOException;
  * {@link SlingSafeMethodsServlet} shall be used for HTTP methods that are
  * idempotent. For write operations use the {@link SlingAllMethodsServlet}.
  */
-@Component(service=Servlet.class,
-           property={
-                   Constants.SERVICE_DESCRIPTION + "=Simple Beverage Servlet",
-                   "sling.servlet.methods=" + HttpConstants.METHOD_POST,
-                   "sling.servlet.resourceTypes="+ "ServletAssignment/servlet/beverage"
-           })
+@Component(service = Servlet.class,
+        property = {
+                Constants.SERVICE_DESCRIPTION + "=Simple Beverage Servlet",
+                "sling.servlet.methods=" + HttpConstants.METHOD_POST,
+                "sling.servlet.resourceTypes=" + "ServletAssignment/servlet/beverage"
+        })
 public class BeverageServlet extends SlingAllMethodsServlet {
     private static final Logger log = LoggerFactory.getLogger(BeverageServlet.class);
     private static final long serialVersionUid = 1L;
 
     @Override
     protected void doPost(final SlingHttpServletRequest req,
-            final SlingHttpServletResponse resp) throws ServletException, IOException {
-        final Resource resource = req.getResource();
+                          final SlingHttpServletResponse resp) throws ServletException, IOException {
 
         log.info("Beverage servlet invoked. Method = POST");
-
-        String beverageName = req.getRequestParameter("beverageName").toString();
-
-        if(beverageName == null){
-            log.error("Beverage name value was empty");
-            throw new ServletException();
-        }
-
-        ResourceResolver resourceResolver = req.getResourceResolver();
-        Resource resources = resourceResolver.getResource("/content/ServletAssignment/beverages");
-
-        log.info("Resource is at path {}", resources.getPath());
-
-        /**
-         * Adapt the resource to javax.jcr.Node type
-         */
-        Node node = resource.adaptTo(Node.class);
-
-        /**
-         * Create a new node with name and primary type and add it below the path specified by the resource
-         */
-        Node newNode = null;
+        int servletResponseCode = 0;
         try {
-            newNode = node.addNode(beverageName, "nt:unstructured");
-        } catch (RepositoryException e) {
-            e.printStackTrace();
+
+            String beverageName = null;
+            try {
+                beverageName = req.getRequestParameter("beverageName").toString();
+
+                if (beverageName == null) {
+                    throw new ServletException();
+                }
+            } catch (ServletException e) {
+                servletResponseCode = HttpServletResponse.SC_BAD_REQUEST;
+                log.error("Incorrect input message. You must supply a valid HTTP form with a parameter called beverageName");
+            }
+
+            ResourceResolver resourceResolver = req.getResourceResolver();
+            Resource resources = resourceResolver.getResource("/content/ServletAssignment/beverages");
+
+            log.info("Resource is at path {}", resources.getPath());
+
+            Node node = resources.adaptTo(Node.class);
+            Node newNode = null;
+            try {
+                if (node.hasNode(beverageName)) {
+                    log.error("“Uniqueness constraint violation. The beverage already exists in the JCR");
+                    servletResponseCode = 409;
+                } else {
+                    newNode = node.addNode(beverageName, "nt:unstructured");
+                    newNode.setProperty("name", beverageName);
+                    servletResponseCode = 200;
+
+                    if (beverageName.equals("Coffee")) {
+                        servletResponseCode = 418;
+                        log.warn("Coffee is for the weak and timid - Prepare to be annihilated");
+                    }
+                }
+
+            } catch (RepositoryException e) {
+                servletResponseCode = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+                log.error(e.getStackTrace().toString());
+            }
+            resourceResolver.commit();
+        } catch (RuntimeException e) {
+            servletResponseCode = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+            log.error(e.getStackTrace().toString());
         }
 
-        /**
-         * Setting a name property for this node
-         */
-        try {
-            newNode.setProperty("name", beverageName);
-        } catch (RepositoryException e) {
-            e.printStackTrace();
-        }
-
-        /**
-         * Commit the changes to JCR
-         */
-        resourceResolver.commit();
-
-
+        resp.getWriter().println(servletResponseCode);
     }
 
 
