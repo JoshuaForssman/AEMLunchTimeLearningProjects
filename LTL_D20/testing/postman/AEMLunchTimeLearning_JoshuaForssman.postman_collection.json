@@ -1,0 +1,209 @@
+{
+	"info": {
+		"_postman_id": "575428dc-ddf8-4f21-8503-443627eb8f52",
+		"name": "AEMLunchTimeLearning_JoshuaForssman",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "A request using an unauthorised user",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "adminsss",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "admin",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:4502/content/ServletAssignment/beverage-servlet?beverageName=Coffee",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4502",
+					"path": [
+						"content",
+						"ServletAssignment",
+						"beverage-servlet"
+					],
+					"query": [
+						{
+							"key": "beverageName",
+							"value": "Coffee"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Beverage Pepsi",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "admin",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:4502/content/ServletAssignment/beverage-servlet?beverageName=Pepsi",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4502",
+					"path": [
+						"content",
+						"ServletAssignment",
+						"beverage-servlet"
+					],
+					"query": [
+						{
+							"key": "beverageName",
+							"value": "Pepsi"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Beverage Coke",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "admin",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:4502/content/ServletAssignment/beverage-servlet?beverageName=Coke",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4502",
+					"path": [
+						"content",
+						"ServletAssignment",
+						"beverage-servlet"
+					],
+					"query": [
+						{
+							"key": "beverageName",
+							"value": "Coke"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Beverage EmptyBody",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:4502/content/ServletAssignment/beverage-servlet?beverageName=Coke",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4502",
+					"path": [
+						"content",
+						"ServletAssignment",
+						"beverage-servlet"
+					],
+					"query": [
+						{
+							"key": "beverageName",
+							"value": "Coke"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Beverage Invalid Json Body",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "admin",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"bfferageNaaame\":\"///\"}"
+				},
+				"url": {
+					"raw": "http://localhost:4502/content/ServletAssignment/beverage-servlet?beverageName=Coke",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4502",
+					"path": [
+						"content",
+						"ServletAssignment",
+						"beverage-servlet"
+					],
+					"query": [
+						{
+							"key": "beverageName",
+							"value": "Coke"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
